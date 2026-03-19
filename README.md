@@ -24,12 +24,15 @@ fev-rips/
 │   │   │   ├── migrate.js      # Runner de migraciones
 │   │   │   └── test-connection.js
 │   │   ├── controllers/
-│   │   │   └── facturas.controller.js
+│   │   │   ├── facturas.controller.js
+│   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
-│   │   │   └── facturas.model.js
+│   │   │   ├── factura.model.js
+│   │   │   └── usuario.model.js
 │   │   ├── routes/
-│   │   │   └── facturas.routes.js
+│   │   │   ├── facturas.routes.js
+│   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
 │   │   │   ├── references.seed.js  # Tablas de referencia fijas
 │   │   │   ├── cups.seed.js        # Carga CUPS desde CSV
@@ -103,7 +106,7 @@ node backend/src/config/migrate.js
 node backend/src/seeds/references.seed.js
 
 # CUPS y CIE-10 desde CSV
-# Coloca los archivos en backend/data/
+# Coloca los archivos en backend/data/seeds
 node backend/src/seeds/cups.seed.js  backend/data/seeds/CUPS_6digitos.xlsx
 node backend/src/seeds/cie10.seed.js backend/data/seeds/CIE10.xlsx
 ```
@@ -114,6 +117,13 @@ node backend/src/seeds/cie10.seed.js backend/data/seeds/CIE10.xlsx
 npm run backend
 # API disponible en http://localhost:3000
 # Health check: http://localhost:3000/health
+```
+
+### 8. Endpoints
+
+```bash
+# Facturas:          http://localhost:3000/api/v1/facturas
+# Usuario x Factura: http://localhost:3000/api/v1/facturas/:factura_id/usuarios
 ```
 
 ---
@@ -156,7 +166,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] Seeds tablas de referencia
 - [x] Loader XLSX para CUPS y CIE-10
 - [x] API REST módulo facturas
-- [ ] API REST módulo usuarios RIPS
+- [x] API REST módulo usuarios RIPS
 - [ ] API REST módulo consultas
 - [ ] API REST módulo procedimientos
 - [ ] Generador de RIPS JSON
