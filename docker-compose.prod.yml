@@ -1,0 +1,65 @@
+# docker-compose.prod.yml  —  FEV-RIPS (producción / clínica)
+# Levanta TODO: PostgreSQL + Backend + Frontend (nginx)
+#
+# Uso:
+#   docker compose -f docker-compose.prod.yml up -d
+#   docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fev_rips_db
+    restart: always
+    environment:
+      POSTGRES_DB:       ${DB_NAME:-fev_rips}
+      POSTGRES_USER:     ${DB_USER:-fev_rips_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Variable DB_PASSWORD requerida}
+    volumes:
+      - fev_rips_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-fev_rips_user} -d ${DB_NAME:-fev_rips}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    # En producción NO exponemos el puerto de la BD al host
+    # Solo accesible desde la red interna de Docker
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fev_rips_backend
+    restart: always
+    environment:
+      NODE_ENV:         production
+      PORT:             3000
+      DB_HOST:          db             # nombre del servicio, no localhost
+      DB_PORT:          5432
+      DB_NAME:          ${DB_NAME:-fev_rips}
+      DB_USER:          ${DB_USER:-fev_rips_user}
+      DB_PASSWORD:      ${DB_PASSWORD}
+      ALLOWED_ORIGINS:  ${ALLOWED_ORIGINS:-http://localhost}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fev_rips_frontend
+    restart: always
+    ports:
+      - "80:80"       # la clínica accede por http://localhost
+    depends_on:
+      - backend
+
+volumes:
+  fev_rips_pgdata:
+    name: fev_rips_pgdata

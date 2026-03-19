@@ -1,0 +1,50 @@
+# docker-compose.yml  —  FEV-RIPS (desarrollo)
+# PostgreSQL en Docker, backend/frontend corren locales con hot-reload
+#
+# Comandos útiles:
+#   docker compose up -d          → levantar
+#   docker compose down           → detener (datos persisten en volumen)
+#   docker compose down -v        → detener + borrar datos
+#   docker compose logs -f db     → ver logs de postgres
+#   docker compose exec db psql -U fev_rips_user -d fev_rips  → consola SQL
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fev_rips_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${DB_NAME:-fev_rips}
+      POSTGRES_USER:     ${DB_USER:-fev_rips_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Variable DB_PASSWORD requerida en .env}
+    ports:
+      - "${DB_PORT:-5432}:5432"   # accesible desde localhost para el backend local
+    volumes:
+      - fev_rips_pgdata:/var/lib/postgresql/data
+      - ./backend/initdb:/docker-entrypoint-initdb.d:ro  # scripts SQL opcionales al crear
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-fev_rips_user} -d ${DB_NAME:-fev_rips}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Adminer: cliente web liviano para inspeccionar la BD en el browser
+  # Acceso: http://localhost:8080
+  # Sistema: PostgreSQL | Servidor: db | Usuario/contraseña: los del .env
+  adminer:
+    image: adminer:4-standalone
+    container_name: fev_rips_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: pepa-linha   # tema limpio
+
+volumes:
+  fev_rips_pgdata:
+    name: fev_rips_pgdata
