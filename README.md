@@ -24,13 +24,16 @@ fev-rips/
 │   │   │   ├── migrate.js      # Runner de migraciones
 │   │   │   └── test-connection.js
 │   │   ├── controllers/
+│   │   │   ├── consultas.controller.js
 │   │   │   ├── facturas.controller.js
 │   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
+│   │   │   ├── consulta.model.js
 │   │   │   ├── factura.model.js
 │   │   │   └── usuario.model.js
 │   │   ├── routes/
+│   │   │   ├── consultas.routes.js
 │   │   │   ├── facturas.routes.js
 │   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
@@ -122,8 +125,9 @@ npm run backend
 ### 8. Endpoints
 
 ```bash
-# Facturas:          http://localhost:3000/api/v1/facturas
-# Usuario x Factura: http://localhost:3000/api/v1/facturas/:factura_id/usuarios
+# Crear Factura:    http://localhost:3000/api/v1/facturas
+# Crear Usuario:    http://localhost:3000/api/v1/facturas/:factura_id/usuarios
+# Crear Consulta:   http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas
 ```
 
 ---
@@ -167,7 +171,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] Loader XLSX para CUPS y CIE-10
 - [x] API REST módulo facturas
 - [x] API REST módulo usuarios RIPS
-- [ ] API REST módulo consultas
+- [x] API REST módulo consultas
 - [ ] API REST módulo procedimientos
 - [ ] Generador de RIPS JSON
 - [ ] Validador contra Anexo Técnico SISPRO
