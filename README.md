@@ -104,8 +104,8 @@ node backend/src/seeds/references.seed.js
 
 # CUPS y CIE-10 desde CSV
 # Coloca los archivos en backend/data/
-node backend/src/seeds/cups.seed.js  backend/data/cups.csv
-node backend/src/seeds/cie10.seed.js backend/data/cie10.csv
+node backend/src/seeds/cups.seed.js  backend/data/seeds/CUPS_6digitos.xlsx
+node backend/src/seeds/cie10.seed.js backend/data/seeds/CIE10.xlsx
 ```
 
 ### 7. Iniciar el servidor
@@ -138,7 +138,7 @@ Todos los commits deben seguir el estándar [Conventional Commits](https://www.c
 feat(db): add PostgreSQL connection pool with pg
 feat(migrate): create all RIPS tables (res. 2275)
 feat(seed): load reference tables from constants
-feat(seed): load cups and cie10 from csv files
+feat(seed): load cups and cie10 from xlsx files
 feat(api): add health check endpoint with db status
 ```
 
@@ -154,8 +154,8 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] Conexión PostgreSQL
 - [x] Migraciones (todas las tablas RIPS)
 - [x] Seeds tablas de referencia
-- [x] Loader CSV para CUPS y CIE-10
-- [ ] API REST módulo facturas
+- [x] Loader XLSX para CUPS y CIE-10
+- [x] API REST módulo facturas
 - [ ] API REST módulo usuarios RIPS
 - [ ] API REST módulo consultas
 - [ ] API REST módulo procedimientos
