@@ -32,11 +32,24 @@ app.get('/health', async (req, res) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Bienvenido a la API de FEV-RIPS',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      facturas: '/api/v1/facturas',
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // ── Routers de la API ─────────────────────────────────────────────────────
 app.use('/api/v1/facturas', require('./routes/facturas.routes'));
+app.use('/api/v1/facturas/:factura_id/usuarios', require('./routes/usuarios.routes'));
 
 // TODO: montar routers de cada módulo aquí
-// app.use('/api/v1/usuarios',      require('./routes/usuarios.routes'));
+// app.use('/api/v1/usuarios', require('./routes/usuarios.routes'));
 // app.use('/api/v1/consultas',     require('./routes/consultas.routes'));
 // app.use('/api/v1/procedimientos',require('./routes/procedimientos.routes'));
 // app.use('/api/v1/rips',          require('./routes/rips.routes'));
