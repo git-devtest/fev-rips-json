@@ -47,6 +47,7 @@ app.get('/', (req, res) => {
 // ── Routers de la API ─────────────────────────────────────────────────────
 app.use('/api/v1/facturas', require('./routes/facturas.routes'));
 app.use('/api/v1/facturas/:factura_id/usuarios', require('./routes/usuarios.routes'));
+app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas', require('./routes/consultas.routes'));
 
 // TODO: montar routers de cada módulo aquí
 // app.use('/api/v1/usuarios', require('./routes/usuarios.routes'));
