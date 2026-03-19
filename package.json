@@ -1,0 +1,10 @@
+{
+  "name": "fev-rips",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Generador de RIPS JSON para FEV - SISPRO Colombia",
+  "scripts": {
+    "prepare": "husky",
+    "db:test": "node backend/src/db/connection.js"
+  }
+}
