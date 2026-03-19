@@ -26,15 +26,18 @@ fev-rips/
 │   │   ├── controllers/
 │   │   │   ├── consultas.controller.js
 │   │   │   ├── facturas.controller.js
+│   │   │   ├── procedimientos.controller.js
 │   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
 │   │   │   ├── consulta.model.js
 │   │   │   ├── factura.model.js
+│   │   │   ├── procedimiento.model.js
 │   │   │   └── usuario.model.js
 │   │   ├── routes/
 │   │   │   ├── consultas.routes.js
 │   │   │   ├── facturas.routes.js
+│   │   │   ├── procedimientos.routes.js
 │   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
 │   │   │   ├── references.seed.js  # Tablas de referencia fijas
@@ -125,9 +128,10 @@ npm run backend
 ### 8. Endpoints
 
 ```bash
-# Crear Factura:    http://localhost:3000/api/v1/facturas
-# Crear Usuario:    http://localhost:3000/api/v1/facturas/:factura_id/usuarios
-# Crear Consulta:   http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas
+# Crear Factura:        http://localhost:3000/api/v1/facturas
+# Crear Usuario:        http://localhost:3000/api/v1/facturas/:factura_id/usuarios
+# Crear Consulta:       http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas
+# Crear Procedimiento:  http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos
 ```
 
 ---
@@ -172,7 +176,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] API REST módulo facturas
 - [x] API REST módulo usuarios RIPS
 - [x] API REST módulo consultas
-- [ ] API REST módulo procedimientos
+- [x] API REST módulo procedimientos
 - [ ] Generador de RIPS JSON
 - [ ] Validador contra Anexo Técnico SISPRO
 - [ ] Importación desde Excel
