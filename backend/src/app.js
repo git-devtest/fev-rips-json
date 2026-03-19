@@ -32,8 +32,10 @@ app.get('/health', async (req, res) => {
   });
 });
 
+// ── Routers de la API ─────────────────────────────────────────────────────
+app.use('/api/v1/facturas', require('./routes/facturas.routes'));
+
 // TODO: montar routers de cada módulo aquí
-// app.use('/api/v1/facturas',      require('./routes/facturas.routes'));
 // app.use('/api/v1/usuarios',      require('./routes/usuarios.routes'));
 // app.use('/api/v1/consultas',     require('./routes/consultas.routes'));
 // app.use('/api/v1/procedimientos',require('./routes/procedimientos.routes'));
