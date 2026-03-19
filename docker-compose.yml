@@ -21,7 +21,6 @@ services:
       - "${DB_PORT:-5432}:5432"   # accesible desde localhost para el backend local
     volumes:
       - fev_rips_pgdata:/var/lib/postgresql/data
-      - ./backend/initdb:/docker-entrypoint-initdb.d:ro  # scripts SQL opcionales al crear
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-fev_rips_user} -d ${DB_NAME:-fev_rips}"]
       interval: 10s
