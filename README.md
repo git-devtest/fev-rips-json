@@ -24,18 +24,22 @@ fev-rips/
 │   │   │   ├── migrate.js      # Runner de migraciones
 │   │   │   └── test-connection.js
 │   │   ├── controllers/
+│   │   │   └── facturas.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
+│   │   │   └── facturas.model.js
 │   │   ├── routes/
+│   │   │   └── facturas.routes.js
 │   │   ├── seeds/
 │   │   │   ├── references.seed.js  # Tablas de referencia fijas
 │   │   │   ├── cups.seed.js        # Carga CUPS desde CSV
 │   │   │   └── cie10.seed.js       # Carga CIE-10 desde CSV
 │   │   ├── services/
 │   │   └── utils/
-│   ├── data/                   # CSVs de referencia (ignorados por git)
-│   │   ├── cups.csv
-│   │   └── cie10.csv
+│   ├── data/                   # XLSXs de referencia (ignorados por git)
+│   │   └── seeds/
+│   │       ├── CIE10.xlsx
+│   │       └── CUPS_6digitos.xlsx
 │   └── .env.example
 ├── frontend/                   # Angular 17
 ├── commitlint.config.js
