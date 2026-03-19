@@ -1,0 +1,30 @@
+{
+  "name": "fev-rips-backend",
+  "version": "0.1.0",
+  "description": "API REST para generación y validación de RIPS JSON - Resolución 2275/2023",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "migrate": "node src/config/migrate.js",
+    "seed:refs": "node src/seeds/references.seed.js",
+    "seed:cups": "node src/seeds/cups.seed.js",
+    "seed:cie10": "node src/seeds/cie10.seed.js",
+    "test:db": "node src/config/test-connection.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.1.1",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
