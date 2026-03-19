@@ -189,7 +189,7 @@ const migrations = [
     name: '020_prestadores',
     up: `
       CREATE TABLE IF NOT EXISTS prestadores (
-        id                       SERIAL       PRIMARY KEY,
+        id                       UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
         num_documento_id_obligado VARCHAR(12)  NOT NULL UNIQUE,
         razon_social             VARCHAR(200),
         tipo_documento           VARCHAR(2),
@@ -203,8 +203,8 @@ const migrations = [
     name: '021_facturas',
     up: `
       CREATE TABLE IF NOT EXISTS facturas (
-        id                       SERIAL       PRIMARY KEY,
-        prestador_id             INTEGER      NOT NULL REFERENCES prestadores(id),
+        id                       UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        prestador_id             UUID         NOT NULL REFERENCES prestadores(id),
         num_factura              VARCHAR(20)  NOT NULL,
         tipo_nota                VARCHAR(2),
         num_nota                 VARCHAR(20),
@@ -224,8 +224,8 @@ const migrations = [
     name: '022_usuarios_rips',
     up: `
       CREATE TABLE IF NOT EXISTS usuarios_rips (
-        id                              SERIAL       PRIMARY KEY,
-        factura_id                      INTEGER      NOT NULL REFERENCES facturas(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        factura_id                      UUID         NOT NULL REFERENCES facturas(id) ON DELETE CASCADE,
         tipo_documento_identificacion   VARCHAR(2)   NOT NULL,
         num_documento_identificacion    VARCHAR(20)  NOT NULL,
         tipo_usuario                    VARCHAR(2)   NOT NULL,
@@ -244,8 +244,8 @@ const migrations = [
     name: '023_consultas',
     up: `
       CREATE TABLE IF NOT EXISTS consultas (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         cod_consulta                    VARCHAR(10)  NOT NULL,
         modalidad_grupo_serv_tec_sal    VARCHAR(2)   NOT NULL,
         grupo_servicios                 VARCHAR(2)   NOT NULL,
@@ -279,8 +279,8 @@ const migrations = [
     name: '024_procedimientos',
     up: `
       CREATE TABLE IF NOT EXISTS procedimientos (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         cod_procedimiento               VARCHAR(10)  NOT NULL,
         fecha_ini_atencion              TIMESTAMPTZ  NOT NULL,
         modalidad_grupo_serv_tec_sal    VARCHAR(2)   NOT NULL,
@@ -311,8 +311,8 @@ const migrations = [
     name: '025_urgencias',
     up: `
       CREATE TABLE IF NOT EXISTS urgencias (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         fecha_ini_atencion              TIMESTAMPTZ  NOT NULL,
         fecha_fin_atencion              TIMESTAMPTZ,
         cod_diagnostico_principal       VARCHAR(10)  NOT NULL,
@@ -341,8 +341,8 @@ const migrations = [
     name: '026_hospitalizacion',
     up: `
       CREATE TABLE IF NOT EXISTS hospitalizacion (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         via_ingreso_servicio_salud      VARCHAR(2)   NOT NULL,
         fecha_ini_atencion              TIMESTAMPTZ  NOT NULL,
         fecha_fin_atencion              TIMESTAMPTZ,
@@ -372,8 +372,8 @@ const migrations = [
     name: '027_recien_nacidos',
     up: `
       CREATE TABLE IF NOT EXISTS recien_nacidos (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         num_documento_id_madre          VARCHAR(20),
         tipo_documento_id_madre         VARCHAR(2),
         edad_gestacional                INTEGER,
@@ -389,8 +389,8 @@ const migrations = [
     name: '028_medicamentos',
     up: `
       CREATE TABLE IF NOT EXISTS medicamentos (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         fecha_dispensacion              DATE         NOT NULL,
         num_autorizacion                VARCHAR(30),
         cod_diagnostico_principal       VARCHAR(10)  NOT NULL,
@@ -414,8 +414,8 @@ const migrations = [
     name: '029_otros_servicios',
     up: `
       CREATE TABLE IF NOT EXISTS otros_servicios (
-        id                              SERIAL       PRIMARY KEY,
-        usuario_rips_id                 INTEGER      NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
+        id                              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+        usuario_rips_id                 UUID         NOT NULL REFERENCES usuarios_rips(id) ON DELETE CASCADE,
         cod_otro_servicio               VARCHAR(10)  NOT NULL,
         fecha_suministro                DATE         NOT NULL,
         num_autorizacion                VARCHAR(30),
@@ -433,8 +433,8 @@ const migrations = [
     name: '030_rips_log',
     up: `
       CREATE TABLE IF NOT EXISTS rips_log (
-        id            SERIAL      PRIMARY KEY,
-        factura_id    INTEGER     REFERENCES facturas(id),
+        id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+        factura_id    UUID        REFERENCES facturas(id),
         accion        VARCHAR(50) NOT NULL,
         resultado     VARCHAR(20) NOT NULL, -- 'ok' | 'error'
         detalle       JSONB,
