@@ -18,15 +18,16 @@ Generador y validador de archivos **RIPS JSON** para reporte a **SISPRO** según
 fev-rips/
 ├── backend/
 │   ├── src/
-│   │   ├── app.js              # Entry point Express
+│   │   ├── app.js                  # Entry point Express
 │   │   ├── config/
-│   │   │   ├── database.js     # Pool pg + helpers
-│   │   │   ├── migrate.js      # Runner de migraciones
-│   │   │   └── test-connection.js
+│   │   │   ├── database.js         # Pool pg + helpers
+│   │   │   ├── migrate.js          # Runner de migraciones
+│   │   │   └── test-connection.js  # Conexión a Base de Datos
 │   │   ├── controllers/
 │   │   │   ├── consultas.controller.js
 │   │   │   ├── facturas.controller.js
 │   │   │   ├── procedimientos.controller.js
+│   │   │   ├── rips.controller.js
 │   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
@@ -38,12 +39,16 @@ fev-rips/
 │   │   │   ├── consultas.routes.js
 │   │   │   ├── facturas.routes.js
 │   │   │   ├── procedimientos.routes.js
+│   │   │   ├── rips.routes.js
 │   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
-│   │   │   ├── references.seed.js  # Tablas de referencia fijas
-│   │   │   ├── cups.seed.js        # Carga CUPS desde CSV
-│   │   │   └── cie10.seed.js       # Carga CIE-10 desde CSV
+│   │   │   ├── cie10.seed.js               # Carga CIE-10 desde XLSX
+│   │   │   ├── cups.seed.js                # Carga CUPS desde XLSX
+│   │   │   ├── geo.seed.js                 # Carga listado de paises
+│   │   │   ├── references.seed.js          # Tablas de referencia fijas
+│   │   │   └── sispro.references.seed.js   # Tablas de referencias auxiliares
 │   │   ├── services/
+│   │   │   └── rips.generator.js   # Lógica de generación JSON
 │   │   └── utils/
 │   ├── data/                   # XLSXs de referencia (ignorados por git)
 │   │   └── seeds/
@@ -109,7 +114,11 @@ node backend/src/config/migrate.js
 
 ```bash
 # Tablas fijas (tipos de documento, modalidades, etc.)
+node backend/src/seeds/cie10.seed.js
+node backend/src/seeds/cups.seed.js
+node backend/src/seeds/geo.seed.js
 node backend/src/seeds/references.seed.js
+node backend/src/seeds/sispro.references.seed.js
 
 # CUPS y CIE-10 desde CSV
 # Coloca los archivos en backend/data/seeds
@@ -132,6 +141,7 @@ npm run backend
 # Crear Usuario:        http://localhost:3000/api/v1/facturas/:factura_id/usuarios
 # Crear Consulta:       http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas
 # Crear Procedimiento:  http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos
+# Generar RIPS JSON:    http://localhost:3000/api/v1/rips/:factura_id
 ```
 
 ---
@@ -177,7 +187,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] API REST módulo usuarios RIPS
 - [x] API REST módulo consultas
 - [x] API REST módulo procedimientos
-- [ ] Generador de RIPS JSON
+- [x] Generador de RIPS JSON
 - [ ] Validador contra Anexo Técnico SISPRO
 - [ ] Importación desde Excel
 - [ ] Frontend Angular 17
