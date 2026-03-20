@@ -47,15 +47,26 @@ async function generarRips(factura_id) {
 
   // ── 3. Servicios por usuario ──────────────────────────────────────────────
   const usuariosJson = await Promise.all(usuarios.map(async (u) => {
-    const [consultas, procedimientos] = await Promise.all([
-      query('SELECT * FROM consultas    WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
-      query('SELECT * FROM procedimientos WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
+    const [consultas, procedimientos, urgencias, hospitalizacion, recienNacidos, medicamentos, otrosServicios] = await Promise.all([
+      query('SELECT * FROM consultas        WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
+      query('SELECT * FROM procedimientos   WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
+      query('SELECT * FROM urgencias        WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
+      query('SELECT * FROM hospitalizacion  WHERE usuario_rips_id = $1 ORDER BY fecha_ini_atencion ASC', [u.id]),
+      query('SELECT * FROM recien_nacidos   WHERE usuario_rips_id = $1 ORDER BY created_at ASC',         [u.id]),
+      query('SELECT * FROM medicamentos     WHERE usuario_rips_id = $1 ORDER BY fecha_dispensacion ASC', [u.id]),
+      query('SELECT * FROM otros_servicios  WHERE usuario_rips_id = $1 ORDER BY fecha_suministro ASC',   [u.id]),
     ]);
 
-    const tieneConsultas      = consultas.rows.length > 0;
-    const tieneProcedimientos = procedimientos.rows.length > 0;
+    const tieneServicio =
+      consultas.rows.length      > 0 ||
+      procedimientos.rows.length > 0 ||
+      urgencias.rows.length      > 0 ||
+      hospitalizacion.rows.length > 0 ||
+      recienNacidos.rows.length  > 0 ||
+      medicamentos.rows.length   > 0 ||
+      otrosServicios.rows.length > 0;
 
-    if (!tieneConsultas && !tieneProcedimientos) {
+    if (!tieneServicio) {
       throw new Error(`El usuario ${u.num_documento_identificacion} no tiene servicios registrados`);
     }
 
@@ -75,12 +86,20 @@ async function generarRips(factura_id) {
       servicios: {},
     };
 
-    // Servicios: consultas O procedimientos (nunca ambos)
-    if (tieneConsultas) {
-      usuarioRips.servicios.consultas = consultas.rows.map(mapConsulta);
-    } else {
-      usuarioRips.servicios.procedimientos = procedimientos.rows.map(mapProcedimiento);
-    }
+    if (consultas.rows.length > 0)
+      usuarioRips.servicios.consultas       = consultas.rows.map(mapConsulta);
+    if (procedimientos.rows.length > 0)
+      usuarioRips.servicios.procedimientos  = procedimientos.rows.map(mapProcedimiento);
+    if (urgencias.rows.length > 0)
+      usuarioRips.servicios.urgencias       = urgencias.rows.map(mapUrgencia);
+    if (hospitalizacion.rows.length > 0)
+      usuarioRips.servicios.hospitalizacion = hospitalizacion.rows.map(mapHospitalizacion);
+    if (recienNacidos.rows.length > 0)
+      usuarioRips.servicios.recienNacidos   = recienNacidos.rows.map(mapRecienNacido);
+    if (medicamentos.rows.length > 0)
+      usuarioRips.servicios.medicamentos    = medicamentos.rows.map(mapMedicamento);
+    if (otrosServicios.rows.length > 0)
+      usuarioRips.servicios.otrosServicios  = otrosServicios.rows.map(mapOtroServicio);
 
     return usuarioRips;
   }));
@@ -156,19 +175,101 @@ function mapProcedimiento(p) {
 // ─── Helpers de fecha ─────────────────────────────────────────────────────────
 
 function formatDate(date) {
-  // Retorna YYYY-MM-DD
   return new Date(date).toISOString().substring(0, 10);
 }
 
 function formatDateTime(date) {
-  // Retorna YYYY-MM-DD HH:mm según formato del JSON de referencia SISPRO
-  const d = new Date(date);
+  const d    = new Date(date);
   const yyyy = d.getUTCFullYear();
   const mm   = String(d.getUTCMonth() + 1).padStart(2, '0');
   const dd   = String(d.getUTCDate()).padStart(2, '0');
   const hh   = String(d.getUTCHours()).padStart(2, '0');
   const min  = String(d.getUTCMinutes()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
+function mapUrgencia(u) {
+  return {
+    fechaInicioAtencion:          formatDateTime(u.fecha_ini_atencion),
+    fechaFinAtencion:             u.fecha_fin_atencion ? formatDateTime(u.fecha_fin_atencion) : null,
+    codDiagnosticoPrincipal:      u.cod_diagnostico_principal,
+    codDiagnosticoRelacionado1:   u.cod_diagnostico_relacionado1 || null,
+    codDiagnosticoRelacionado2:   u.cod_diagnostico_relacionado2 || null,
+    codDiagnosticoRelacionado3:   u.cod_diagnostico_relacionado3 || null,
+    tipoDiagnosticoPrincipal:     u.tipo_dx_principal,
+    causaMotivoBusqueda:          u.causa_externa                || null,
+    viaIngresoServicioSalud:      u.via_ingreso_servicio_salud,
+    modalidadGrupoServicioTecSal: u.modalidad_grupo_serv_tec_sal,
+    grupoServicios:               u.grupo_servicios,
+    codPrestador:                 u.cod_prestador                || null,
+    numAutorizacion:              u.num_autorizacion             || null,
+    vrServicio:                   parseFloat(u.valor_urgencia),
+    valorPagoModerador:           parseFloat(u.valor_copago_moderadora),
+    conceptoRecaudo:              u.concepto_recaudo,
+  };
+}
+
+function mapHospitalizacion(h) {
+  return {
+    viaIngresoServicioSalud:      h.via_ingreso_servicio_salud,
+    fechaInicioAtencion:          formatDateTime(h.fecha_ini_atencion),
+    fechaFinAtencion:             h.fecha_fin_atencion ? formatDateTime(h.fecha_fin_atencion) : null,
+    numAutorizacion:              h.num_autorizacion             || null,
+    codDiagnosticoPrincipal:      h.cod_diagnostico_principal,
+    codDiagnosticoRelacionado1:   h.cod_diagnostico_relacionado1 || null,
+    codDiagnosticoRelacionado2:   h.cod_diagnostico_relacionado2 || null,
+    codDiagnosticoRelacionado3:   h.cod_diagnostico_relacionado3 || null,
+    tipoDiagnosticoPrincipal:     h.tipo_dx_principal,
+    causaBasicaMuerte:            h.causa_externa                || null,
+    codDiagnosticoMuerte:         h.cod_diagnostico_muerte       || null,
+    modalidadGrupoServicioTecSal: h.modalidad_grupo_serv_tec_sal,
+    grupoServicios:               h.grupo_servicios,
+    codPrestador:                 h.cod_prestador                || null,
+    vrServicio:                   parseFloat(h.valor_hospitalizacion),
+    valorPagoModerador:           parseFloat(h.valor_copago_moderadora),
+    conceptoRecaudo:              h.concepto_recaudo,
+  };
+}
+
+function mapRecienNacido(r) {
+  return {
+    numDocumentoIdentificacionMadre: r.num_documento_id_madre      || null,
+    tipoDocumentoIdentificacionMadre: r.tipo_documento_id_madre    || null,
+    edadGestacional:                 r.edad_gestacional            || null,
+    multiplicidadGestacion:          r.multiplicidad_gestacion     || null,
+    pesoAlNacer:                     r.peso_al_nacer               || null,
+    codDiagnosticoPrincipal:         r.cod_diagnostico_principal,
+    condicionDestinoUsuarioEgreso:   r.condicion_usuario_al_egreso || null,
+  };
+}
+
+function mapMedicamento(m) {
+  return {
+    fechaDispensacion:              formatDate(m.fecha_dispensacion),
+    numAutorizacion:                m.num_autorizacion             || null,
+    codDiagnosticoPrincipal:        m.cod_diagnostico_principal,
+    tipoMedicamento:                m.tipo_medicamento,
+    descripcionMedicamento:         m.descripcion_medicamento      || null,
+    codMedicamento:                 m.cod_medicamento              || null,
+    concentracionMedicamento:       m.concentracion_medicamento    || null,
+    unidadMedidaMedicamento:        m.unidad_medida_medicamento    || null,
+    formaFarmaceuticaMedicamento:   m.forma_farmaceutica           || null,
+    viaAdministracionMedicamento:   m.via_administracion_medicamento || null,
+    numeroUnidadesMedicamento:      parseFloat(m.numero_unidades),
+    vrUnitMedicamento:              parseFloat(m.valor_unit_medicamento),
+    vrServicio:                     parseFloat(m.valor_total_medicamento),
+  };
+}
+
+function mapOtroServicio(o) {
+  return {
+    codOtroServicio:                o.cod_otro_servicio,
+    fechaSuministroTecnologia:      formatDate(o.fecha_suministro),
+    numAutorizacion:                o.num_autorizacion             || null,
+    cantidadOtroServicio:           parseFloat(o.cantidad_otro_servicio),
+    vrUnitOtroServicio:             parseFloat(o.valor_unit_otro_servicio),
+    vrServicio:                     parseFloat(o.valor_total_otro_servicio),
+  };
 }
 
 module.exports = { generarRips };
