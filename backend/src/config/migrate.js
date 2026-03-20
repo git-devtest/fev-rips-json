@@ -452,6 +452,143 @@ const migrations = [
       );
     `,
   },
+  // ── 5. CAMPOS ADICIONALES (Res. 2275 - campos faltantes) ─────────────────
+  {
+    name: '031_usuarios_rips_campos_adicionales',
+    up: `
+      ALTER TABLE usuarios_rips
+        ADD COLUMN IF NOT EXISTS cod_sexo        VARCHAR(1),
+        ADD COLUMN IF NOT EXISTS cod_pais_origen VARCHAR(3);
+    `,
+  },
+  {
+    name: '032_procedimientos_campos_adicionales',
+    up: `
+      ALTER TABLE procedimientos
+        ADD COLUMN IF NOT EXISTS id_mipres                  VARCHAR(20),
+        ADD COLUMN IF NOT EXISTS cod_servicio               INTEGER,
+        ADD COLUMN IF NOT EXISTS finalidad_tecnologia_salud VARCHAR(2),
+        ADD COLUMN IF NOT EXISTS num_fev_pago_moderador     VARCHAR(20),
+        ADD COLUMN IF NOT EXISTS consecutivo                INTEGER;
+    `,
+  },
+  // ── 6. NUEVAS TABLAS DE REFERENCIA SISPRO ────────────────────────────────
+  {
+    name: '033_ref_causa_motivo_cons_ext',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_causa_motivo_cons_ext (
+        codigo      VARCHAR(3)   PRIMARY KEY,
+        descripcion VARCHAR(300) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '034_ref_causa_motivo_urg_proc',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_causa_motivo_urg_proc (
+        codigo      VARCHAR(3)   PRIMARY KEY,
+        descripcion VARCHAR(300) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '035_ref_paises',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_paises (
+        codigo      VARCHAR(5)   PRIMARY KEY,
+        descripcion VARCHAR(200) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '036_ref_cod_sexo',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_cod_sexo (
+        codigo      VARCHAR(1)   PRIMARY KEY,
+        descripcion VARCHAR(50)  NOT NULL
+      );
+    `,
+  },
+  {
+    name: '037_ref_cod_sexo_biologico',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_cod_sexo_biologico (
+        codigo      VARCHAR(2)   PRIMARY KEY,
+        descripcion VARCHAR(50)  NOT NULL
+      );
+    `,
+  },
+  {
+    name: '038_ref_condicion_egreso',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_condicion_egreso (
+        codigo      VARCHAR(2)   PRIMARY KEY,
+        descripcion VARCHAR(200) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '039_ref_finalidad_tecnologia_salud',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_finalidad_tecnologia_salud (
+        codigo      VARCHAR(2)   PRIMARY KEY,
+        descripcion VARCHAR(300) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '040_ref_tipo_nota',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_tipo_nota (
+        codigo      VARCHAR(2)   PRIMARY KEY,
+        descripcion VARCHAR(50)  NOT NULL
+      );
+    `,
+  },
+  {
+    name: '041_ref_tipo_os',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_tipo_os (
+        codigo      VARCHAR(2)   PRIMARY KEY,
+        descripcion VARCHAR(100) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '042_ref_cod_servicio',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_cod_servicio (
+        codigo      INTEGER      PRIMARY KEY,
+        descripcion VARCHAR(200) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '043_ref_unidad_min_dispensa',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_unidad_min_dispensa (
+        codigo      INTEGER      PRIMARY KEY,
+        descripcion VARCHAR(200) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '044_ref_unidad_medida',
+    up: `
+      CREATE TABLE IF NOT EXISTS ref_unidad_medida (
+        codigo      VARCHAR(10)  PRIMARY KEY,
+        nombre      VARCHAR(100),
+        descripcion VARCHAR(300) NOT NULL
+      );
+    `,
+  },
+  {
+    name: '045_ref_formas_farmaceuticas_codigo_ampliar',
+    up: `
+      ALTER TABLE ref_formas_farmaceuticas
+        ALTER COLUMN codigo TYPE VARCHAR(10);
+    `,
+  },
 ];
 
 // ─────────────────────────────────────────────
