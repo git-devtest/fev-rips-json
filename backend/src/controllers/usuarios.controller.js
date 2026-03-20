@@ -63,6 +63,14 @@ async function create(req, res, next) {
       });
     }
 
+    // Regla de negocio: 1 factura = 1 usuario
+    if (parseInt(factura.total_usuarios) >= 1) {
+      return res.status(409).json({
+        error: 'Una factura solo puede tener un usuario asociado según la Resolución 2275.',
+        usuario_id: (await Usuario.findByFactura(req.params.factura_id))[0]?.id,
+      });
+    }
+
     // Verificar unicidad: mismo documento en la misma factura
     const existe = await Usuario.findByDocumentoEnFactura(
       req.params.factura_id,
