@@ -26,7 +26,7 @@ const crearUsuario = [
     .isLength({ max: 20 }),
   body('tipo_usuario')
     .trim().notEmpty().withMessage('tipo_usuario es requerido')
-    .isIn(['01','02','03','04','05','06','07','08','09'])
+    .isLength({ max: 2 }).withMessage('Máximo 2 caracteres')
     .withMessage('Tipo de usuario no válido según Resolución 2275'),
   body('cod_zona_territorial_residencia')
     .trim().notEmpty().withMessage('cod_zona_territorial_residencia es requerido')
@@ -43,7 +43,7 @@ const crearUsuario = [
     .isLength({ max: 5 }),
   body('incapacidad')
     .optional({ nullable: true })
-    .isIn(['01','02','03','04','05'])
+    .isIn(['NO','SI']).withMessage('Debe ser NO o SI')
     .withMessage('Código de incapacidad no válido'),
   body('consecutivo_usuario')
     .optional({ nullable: true })
