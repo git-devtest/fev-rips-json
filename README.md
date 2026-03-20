@@ -136,13 +136,64 @@ npm run backend
 
 ### 8. Endpoints
 
-```bash
-# Crear Factura:        http://localhost:3000/api/v1/facturas
-# Crear Usuario:        http://localhost:3000/api/v1/facturas/:factura_id/usuarios
-# Crear Consulta:       http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas
-# Crear Procedimiento:  http://localhost:3000/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos
-# Generar RIPS JSON:    http://localhost:3000/api/v1/rips/:factura_id
-```
+#### Health
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/health` | Estado de la API y conexión a BD |
+
+#### Facturas
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/facturas` | Listar facturas (paginado, filtros: `estado`, `prestador_id`, `page`, `limit`) |
+| GET | `/api/v1/facturas/:id` | Obtener factura por ID |
+| POST | `/api/v1/facturas` | Crear factura |
+| PATCH | `/api/v1/facturas/:id` | Actualizar factura (solo en estado `borrador`) |
+| DELETE | `/api/v1/facturas/:id` | Eliminar factura (solo en estado `borrador`) |
+
+#### Usuarios RIPS
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/facturas/:factura_id/usuarios` | Listar usuarios de una factura |
+| GET | `/api/v1/facturas/:factura_id/usuarios/:id` | Obtener usuario por ID |
+| POST | `/api/v1/facturas/:factura_id/usuarios` | Crear usuario (máximo 1 por factura) |
+| PATCH | `/api/v1/facturas/:factura_id/usuarios/:id` | Actualizar usuario |
+| DELETE | `/api/v1/facturas/:factura_id/usuarios/:id` | Eliminar usuario y sus servicios en cascada |
+
+#### Consultas
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas` | Listar consultas |
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Obtener consulta |
+| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas` | Crear consulta (excluye procedimientos) |
+| PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Actualizar consulta |
+| DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Eliminar consulta |
+
+#### Procedimientos
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Listar procedimientos |
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Obtener procedimiento |
+| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Crear procedimiento (excluye consultas) |
+| PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Actualizar procedimiento |
+| DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Eliminar procedimiento |
+
+#### Generador RIPS
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/rips/:factura_id` | Previsualizar JSON RIPS (sin persistir) |
+| POST | `/api/v1/rips/:factura_id/generar` | Generar y persistir JSON RIPS en BD |
+| GET | `/api/v1/rips/:factura_id/descargar` | Descargar archivo `.json` |
+
+#### Tablas de referencia
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/ref` | Listar todas las tablas disponibles |
+| GET | `/api/v1/ref/:tabla` | Obtener registros de una tabla |
+| GET | `/api/v1/ref/municipios?departamento=76` | Municipios filtrados por departamento |
+| GET | `/api/v1/ref/cups?q=puncion&limit=10` | Búsqueda en CUPS por código o descripción |
+| GET | `/api/v1/ref/cie10?q=J06&limit=10` | Búsqueda en CIE-10 por código o descripción |
+
+> Tablas disponibles: `tipos-documento`, `tipos-usuario`, `cod-sexo`, `cod-sexo-biologico`, `zonas-territoriales`, `paises`, `departamentos`, `municipios`, `incapacidad`, `modalidades`, `grupos-servicio`, `vias-ingreso`, `conceptos-recaudo`, `tipos-diagnostico`, `causa-motivo-cons-ext`, `causa-motivo-urg-proc`, `finalidad-tecnologia`, `cod-servicio`, `condicion-egreso`, `tipos-nota`, `tipos-medicamento`, `formas-farmaceuticas`, `unidades-medida`, `unidades-min-dispensa`, `tipos-os`, `cups`, `cie10`
 
 ---
 
@@ -188,6 +239,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] API REST módulo consultas
 - [x] API REST módulo procedimientos
 - [x] Generador de RIPS JSON
+- [x] API REST módulo para dropdowns del frontend
 - [ ] Validador contra Anexo Técnico SISPRO
 - [ ] Importación desde Excel
 - [ ] Frontend Angular 17
