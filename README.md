@@ -169,7 +169,7 @@ npm run backend
 |---|---|---|
 | GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas` | Listar consultas |
 | GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Obtener consulta |
-| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas` | Crear consulta (excluye procedimientos) |
+| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas` | Crear consulta (excluye otros servicios) |
 | PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Actualizar consulta |
 | DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas/:id` | Eliminar consulta |
 
@@ -178,7 +178,7 @@ npm run backend
 |---|---|---|
 | GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Listar procedimientos |
 | GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Obtener procedimiento |
-| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Crear procedimiento (excluye consultas) |
+| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Crear procedimiento (excluye otros servicios) |
 | PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Actualizar procedimiento |
 | DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Eliminar procedimiento |
 
@@ -252,6 +252,7 @@ Cada commit debe representar **un solo cambio lógico** y poder revertirse sin a
 - [x] API REST módulo usuarios RIPS
 - [x] API REST módulo consultas
 - [x] API REST módulo procedimientos
+- [x] API REST módulo urgencias
 - [x] Generador de RIPS JSON
 - [x] API REST módulo para dropdowns del frontend
 - [ ] Validador contra Anexo Técnico SISPRO
