@@ -20,9 +20,10 @@ const camposProcedimiento = [
     .trim().notEmpty().withMessage('cod_procedimiento es requerido')
     .isLength({ max: 10 }),
 
-  body('fecha_ini_atencion')
-    .notEmpty().withMessage('fecha_ini_atencion es requerida')
-    .isISO8601().withMessage('Formato inválido, use ISO 8601 (YYYY-MM-DDTHH:mm:ss)'),
+  body('fecha_inicio_atencion')
+    .notEmpty().withMessage('fecha_inicio_atencion es requerida')
+    .matches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)
+    .withMessage('Formato inválido, use YYYY-MM-DD HH:mm'),
 
   body('modalidad_grupo_serv_tec_sal')
     .trim().notEmpty().withMessage('modalidad_grupo_serv_tec_sal es requerido')
@@ -39,8 +40,8 @@ const camposProcedimiento = [
     .isIn(['01','02','03','04','05'])
     .withMessage('Vía de ingreso no válida'),
 
-  body('dx_principal')
-    .trim().notEmpty().withMessage('dx_principal es requerido')
+  body('cod_diagnostico_principal')
+    .trim().notEmpty().withMessage('cod_diagnostico_principal es requerido')
     .isLength({ max: 10 }),
 
   body('tipo_dx_principal')
@@ -56,8 +57,8 @@ const camposProcedimiento = [
   // Opcionales
   body('cod_prestador').optional({ nullable: true }).isLength({ max: 12 }),
   body('num_autorizacion').optional({ nullable: true }).isLength({ max: 30 }),
-  body('dx_relacionado').optional({ nullable: true }).isLength({ max: 10 }),
-  body('dx_complicacion').optional({ nullable: true }).isLength({ max: 10 }),
+  body('cod_diagnostico_relacionado').optional({ nullable: true }).isLength({ max: 10 }),
+  body('cod_complicacion').optional({ nullable: true }).isLength({ max: 10 }),
   body('forma_acto_quirurgico')
     .optional({ nullable: true })
     .isIn(['01','02','03','04','05'])
