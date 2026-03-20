@@ -7,9 +7,13 @@
     "dev": "nodemon src/app.js",
     "start": "node src/app.js",
     "migrate": "node src/config/migrate.js",
+    "migrate:rollback": "node src/config/migrate.js rollback",
+    "seed": "node src/config/seed.js",
     "seed:refs": "node src/seeds/references.seed.js",
     "seed:cups": "node src/seeds/cups.seed.js",
     "seed:cie10": "node src/seeds/cie10.seed.js",
+    "seed:sispro": "node src/seeds/sispro.references.seed.js",
+    "seed:geo": "node src/seeds/geo.seed.js",
     "test:db": "node src/config/test-connection.js"
   },
   "dependencies": {
