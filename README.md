@@ -29,12 +29,14 @@ fev-rips/
 │   │   │   ├── procedimientos.controller.js
 │   │   │   ├── referencias.controller.js
 │   │   │   ├── rips.controller.js
+│   │   │   ├── urgencias.controller.js
 │   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
 │   │   ├── models/
 │   │   │   ├── consulta.model.js
 │   │   │   ├── factura.model.js
 │   │   │   ├── procedimiento.model.js
+│   │   │   ├── urgencia.model.js
 │   │   │   └── usuario.model.js
 │   │   ├── routes/
 │   │   │   ├── consultas.routes.js
@@ -42,6 +44,7 @@ fev-rips/
 │   │   │   ├── procedimientos.routes.js
 │   │   │   ├── referencias.routes.js
 │   │   │   ├── rips.routes.js
+│   │   │   ├── urgencias.routes.js
 │   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
 │   │   │   ├── cie10.seed.js               # Carga CIE-10 desde XLSX
@@ -178,6 +181,15 @@ npm run backend
 | POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos` | Crear procedimiento (excluye consultas) |
 | PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Actualizar procedimiento |
 | DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos/:id` | Eliminar procedimiento |
+
+#### Urgencias
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias` | Listar urgencias |
+| GET | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias/:id` | Obtener urgencia |
+| POST | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias` | Crear urgencia (excluye otros servicios) |
+| PATCH | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias/:id` | Actualizar urgencia |
+| DELETE | `/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias/:id` | Eliminar urgencia |
 
 #### Generador RIPS
 | Método | Ruta | Descripción |
