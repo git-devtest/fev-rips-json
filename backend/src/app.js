@@ -50,14 +50,13 @@ app.use('/api/v1/facturas/:factura_id/usuarios', require('./routes/usuarios.rout
 app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas', require('./routes/consultas.routes'));
 app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos', require('./routes/procedimientos.routes'));
 app.use('/api/v1/rips', require('./routes/rips.routes'));
+app.use('/api/v1/ref', require('./routes/referencias.routes'));
 
 // TODO: montar routers de cada módulo aquí
 // app.use('/api/v1/usuarios', require('./routes/usuarios.routes'));
 // app.use('/api/v1/consultas',     require('./routes/consultas.routes'));
 // app.use('/api/v1/procedimientos',require('./routes/procedimientos.routes'));
-// app.use('/api/v1/rips',          require('./routes/rips.routes'));
 // app.use('/api/v1/validator',     require('./routes/validator.routes'));
-// app.use('/api/v1/ref',           require('./routes/referencias.routes'));
 
 // ── 404 handler ───────────────────────────────
 app.use((req, res) => {
