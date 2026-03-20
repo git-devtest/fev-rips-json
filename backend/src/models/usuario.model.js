@@ -55,7 +55,9 @@ async function create({
   num_documento_identificacion,
   tipo_usuario,
   fecha_nacimiento,
+  cod_sexo,
   cod_pais_residencia,
+  cod_pais_origen,
   cod_municipio_residencia,
   cod_zona_territorial_residencia,
   incapacidad,
@@ -68,24 +70,28 @@ async function create({
        num_documento_identificacion,
        tipo_usuario,
        fecha_nacimiento,
+       cod_sexo,
        cod_pais_residencia,
+       cod_pais_origen,
        cod_municipio_residencia,
        cod_zona_territorial_residencia,
        incapacidad,
        consecutivo_usuario
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
      RETURNING *`,
     [
       factura_id,
       tipo_documento_identificacion,
       num_documento_identificacion,
       tipo_usuario,
-      fecha_nacimiento       || null,
-      cod_pais_residencia    || '170',  // Colombia por defecto
+      fecha_nacimiento        || null,
+      cod_sexo                || null,
+      cod_pais_residencia     || '170',
+      cod_pais_origen         || '170',
       cod_municipio_residencia || null,
       cod_zona_territorial_residencia,
-      incapacidad            || null,
-      consecutivo_usuario    || null,
+      incapacidad             || null,
+      consecutivo_usuario     || null,
     ]
   );
   return rows[0];
@@ -98,7 +104,9 @@ async function update(id, campos) {
   const permitidos = [
     'tipo_usuario',
     'fecha_nacimiento',
+    'cod_sexo',
     'cod_pais_residencia',
+    'cod_pais_origen',
     'cod_municipio_residencia',
     'cod_zona_territorial_residencia',
     'incapacidad',
