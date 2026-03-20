@@ -27,6 +27,7 @@ fev-rips/
 │   │   │   ├── consultas.controller.js
 │   │   │   ├── facturas.controller.js
 │   │   │   ├── procedimientos.controller.js
+│   │   │   ├── referencias.controller.js
 │   │   │   ├── rips.controller.js
 │   │   │   └── usuarios.controller.js
 │   │   ├── middleware/
@@ -39,6 +40,7 @@ fev-rips/
 │   │   │   ├── consultas.routes.js
 │   │   │   ├── facturas.routes.js
 │   │   │   ├── procedimientos.routes.js
+│   │   │   ├── referencias.routes.js
 │   │   │   ├── rips.routes.js
 │   │   │   └── usuarios.routes.js
 │   │   ├── seeds/
