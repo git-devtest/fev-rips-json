@@ -50,7 +50,8 @@ app.use('/api/v1/facturas/:factura_id/usuarios', require('./routes/usuarios.rout
 app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/consultas',        require('./routes/consultas.routes'));
 app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/procedimientos',   require('./routes/procedimientos.routes'));
 app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/urgencias',        require('./routes/urgencias.routes'));
-app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/hospitalizaciones',require('./routes/hospitalizaciones.routes'));  // ← nueva línea
+app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/hospitalizaciones',require('./routes/hospitalizaciones.routes'));
+app.use('/api/v1/facturas/:factura_id/usuarios/:usuario_id/recien_nacidos',  require('./routes/recien_nacidos.routes'));
 app.use('/api/v1/rips', require('./routes/rips.routes'));
 app.use('/api/v1/ref',  require('./routes/referencias.routes'));
 
