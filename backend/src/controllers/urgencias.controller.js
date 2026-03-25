@@ -1,11 +1,14 @@
 // src/controllers/urgencias.controller.js
 'use strict';
 
-const { validationResult } = require('express-validator');
-const Urgencia  = require('../models/urgencia.model');
-const Usuario   = require('../models/usuario.model');
-const Factura   = require('../models/factura.model');
-const { query } = require('../config/database');
+const { validationResult }        = require('express-validator');
+const Urgencia                    = require('../models/urgencia.model');
+const Usuario                     = require('../models/usuario.model');
+const Factura                     = require('../models/factura.model');
+const { query }                   = require('../config/database');
+const { verificarExclusionMutua } = require('../utils/servicios.utils');
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function validationErrors(req, res) {
   const errors = validationResult(req);
@@ -29,6 +32,8 @@ async function resolveContext(req, res) {
   }
   return { usuario, factura };
 }
+
+// ─── Controladores ────────────────────────────────────────────────────────────
 
 async function index(req, res, next) {
   try {
@@ -63,20 +68,20 @@ async function create(req, res, next) {
       });
     }
 
-    // Regla de exclusión mutua: un usuario tiene solo un tipo de servicio
-    const [consultas, procedimientos, urgencias] = await Promise.all([
-      query('SELECT 1 FROM consultas     WHERE usuario_rips_id = $1 LIMIT 1', [req.params.usuario_id]),
-      query('SELECT 1 FROM procedimientos WHERE usuario_rips_id = $1 LIMIT 1', [req.params.usuario_id]),
-      query('SELECT 1 FROM urgencias     WHERE usuario_rips_id = $1 LIMIT 1', [req.params.usuario_id]),
-    ]);
+    // Regla de exclusión mutua Res. 2275
+    const tipoExistente = await verificarExclusionMutua(req.params.usuario_id, 'urgencias');
+    if (tipoExistente) {
+      return res.status(409).json({
+        error: `Este usuario ya tiene ${tipoExistente}. Un usuario solo puede tener un tipo de servicio.`,
+      });
+    }
 
-    if (consultas.rows.length > 0) {
-      return res.status(409).json({ error: 'Este usuario ya tiene consultas. Un usuario solo puede tener un tipo de servicio.' });
-    }
-    if (procedimientos.rows.length > 0) {
-      return res.status(409).json({ error: 'Este usuario ya tiene procedimientos. Un usuario solo puede tener un tipo de servicio.' });
-    }
-    if (urgencias.rows.length > 0) {
+    // Urgencias: solo se permite 1 registro por usuario
+    const { rows } = await query(
+      'SELECT 1 FROM urgencias WHERE usuario_rips_id = $1 LIMIT 1',
+      [req.params.usuario_id]
+    );
+    if (rows.length > 0) {
       return res.status(409).json({ error: 'Este usuario ya tiene una urgencia registrada.' });
     }
 
@@ -95,7 +100,9 @@ async function update(req, res, next) {
     if (!ctx) return;
 
     if (ctx.factura.estado !== 'borrador') {
-      return res.status(409).json({ error: `No se puede editar una urgencia de una factura en estado '${ctx.factura.estado}'` });
+      return res.status(409).json({
+        error: `No se puede editar una urgencia de una factura en estado '${ctx.factura.estado}'`,
+      });
     }
 
     const urgencia = await Urgencia.findById(req.params.id);
@@ -114,7 +121,9 @@ async function remove(req, res, next) {
     if (!ctx) return;
 
     if (ctx.factura.estado !== 'borrador') {
-      return res.status(409).json({ error: `No se puede eliminar una urgencia de una factura en estado '${ctx.factura.estado}'` });
+      return res.status(409).json({
+        error: `No se puede eliminar una urgencia de una factura en estado '${ctx.factura.estado}'`,
+      });
     }
 
     const urgencia = await Urgencia.findById(req.params.id);
